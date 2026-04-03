@@ -18,6 +18,8 @@ const MAPPING = {
   'music.mic': 'mic',
   'heart.fill': 'favorite',
   'list.bullet': 'format-list-bulleted',
+  'magnifyingglass': 'search',
+  'xmark.circle.fill': 'cancel',
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',

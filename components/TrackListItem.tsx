@@ -1,7 +1,8 @@
 import { colors, fontSize } from "@/constants/token";
 import { defaultStyle } from "@/styles";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ImageSourcePropType,
   StyleSheet,
@@ -21,6 +22,12 @@ const TrackListItem = ({
   artist?: string;
   onPress?: () => void;
 }) => {
+  const [isImageLoading, setIsImageLoading] = useState(Boolean(artwork));
+
+  useEffect(() => {
+    setIsImageLoading(Boolean(artwork));
+  }, [artwork]);
+
   const imageSource: ImageSourcePropType = artwork
     ? { uri: artwork }
     : require("../assets/images/unknown_track.png");
@@ -30,13 +37,23 @@ const TrackListItem = ({
   return (
     <TouchableHighlight onPress={onPress} underlayColor="#1a1a1a">
       <View style={styles.container}>
-        <Image
-          source={imageSource}
-          style={{
-            ...styles.trackArtImage,
-            opacity: isActiveTrack ? 0.6 : 1,
-          }}
-        />
+        <View style={styles.imageWrapper}>
+          <Image
+            source={imageSource}
+            onLoadStart={() => setIsImageLoading(Boolean(artwork))}
+            onLoadEnd={() => setIsImageLoading(false)}
+            onError={() => setIsImageLoading(false)}
+            style={{
+              ...styles.trackArtImage,
+              opacity: isActiveTrack ? 0.6 : 1,
+            }}
+          />
+          {isImageLoading ? (
+            <View style={styles.imageLoader}>
+              <ActivityIndicator color={colors.text} size="small" />
+            </View>
+          ) : null}
+        </View>
 
         <View style={styles.trackTextContainer}>
           <Text
@@ -71,9 +88,23 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   trackArtImage: {
-    borderRadius: 8,
     width: 50,
     height: 50,
+  },
+  imageWrapper: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1a1a1a",
+  },
+  imageLoader: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   trackTextContainer: {
     flex: 1,
