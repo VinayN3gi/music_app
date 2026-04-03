@@ -1,4 +1,6 @@
 import { colors, fontSize, screenPadding } from "@/constants/token";
+import { usePlayer } from "@/providers/PlayerProvider";
+import { router } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import {
@@ -16,6 +18,7 @@ import TrackListItem from "./TrackListItem";
 const TracksList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<TextInput>(null);
+  const { currentTrack, selectTrack } = usePlayer();
 
   const filteredTracks = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -88,7 +91,11 @@ const TracksList = () => {
           title={item.title}
           artwork={item.artwork}
           artist={item.artist}
-          onPress={() => {}}
+          isActiveTrack={currentTrack?.url === item.url}
+          onPress={() => {
+            selectTrack(item);
+            router.push("/(tabs)/(songs)/player");
+          }}
         />
       )}
     />
